@@ -1,0 +1,116 @@
+{
+  "Logistic Regression": {
+    "accuracy": 0.845992260917634,
+    "auc": 0.9046502153179784,
+    "precision": 0.7315875613747954,
+    "recall": 0.5981266726137378,
+    "f1": 0.658159509202454,
+    "mcc": 0.5647863428769241,
+    "confusion_matrix": [
+      [
+        6311,
+        492
+      ],
+      [
+        901,
+        1341
+      ]
+    ],
+    "classification_report": "              precision    recall  f1-score   support\n\n           0       0.88      0.93      0.90      6803\n           1       0.73      0.60      0.66      2242\n\n    accuracy                           0.85      9045\n   macro avg       0.80      0.76      0.78      9045\nweighted avg       0.84      0.85      0.84      9045\n"
+  },
+  "Decision Tree": {
+    "accuracy": 0.8059701492537313,
+    "auc": 0.747334144313464,
+    "precision": 0.6039265898420828,
+    "recall": 0.6311329170383586,
+    "f1": 0.6172300981461287,
+    "mcc": 0.4875749161750143,
+    "confusion_matrix": [
+      [
+        5875,
+        928
+      ],
+      [
+        827,
+        1415
+      ]
+    ],
+    "classification_report": "              precision    recall  f1-score   support\n\n           0       0.88      0.86      0.87      6803\n           1       0.60      0.63      0.62      2242\n\n    accuracy                           0.81      9045\n   macro avg       0.74      0.75      0.74      9045\nweighted avg       0.81      0.81      0.81      9045\n"
+  },
+  "kNN": {
+    "accuracy": 0.8266445550027639,
+    "auc": 0.8653162147202991,
+    "precision": 0.6715885947046843,
+    "recall": 0.588314005352364,
+    "f1": 0.6271992391821207,
+    "mcc": 0.5168204659476677,
+    "confusion_matrix": [
+      [
+        6158,
+        645
+      ],
+      [
+        923,
+        1319
+      ]
+    ],
+    "classification_report": "              precision    recall  f1-score   support\n\n           0       0.87      0.91      0.89      6803\n           1       0.67      0.59      0.63      2242\n\n    accuracy                           0.83      9045\n   macro avg       0.77      0.75      0.76      9045\nweighted avg       0.82      0.83      0.82      9045\n"
+  },
+  "Naive Bayes": {
+    "accuracy": 0.6447761194029851,
+    "auc": 0.8506829384580425,
+    "precision": 0.4046356315065802,
+    "recall": 0.9188224799286352,
+    "f1": 0.5618437201690986,
+    "mcc": 0.4119739440644971,
+    "confusion_matrix": [
+      [
+        3772,
+        3031
+      ],
+      [
+        182,
+        2060
+      ]
+    ],
+    "classification_report": "              precision    recall  f1-score   support\n\n           0       0.95      0.55      0.70      6803\n           1       0.40      0.92      0.56      2242\n\n    accuracy                           0.64      9045\n   macro avg       0.68      0.74      0.63      9045\nweighted avg       0.82      0.64      0.67      9045\n"
+  },
+  "Random Forest": {
+    "accuracy": 0.8455500276395799,
+    "auc": 0.9013336719920622,
+    "precision": 0.7215521761929733,
+    "recall": 0.6137377341659233,
+    "f1": 0.663292359604724,
+    "mcc": 0.5670391475418132,
+    "confusion_matrix": [
+      [
+        6272,
+        531
+      ],
+      [
+        866,
+        1376
+      ]
+    ],
+    "classification_report": "              precision    recall  f1-score   support\n\n           0       0.88      0.92      0.90      6803\n           1       0.72      0.61      0.66      2242\n\n    accuracy                           0.85      9045\n   macro avg       0.80      0.77      0.78      9045\nweighted avg       0.84      0.85      0.84      9045\n"
+  },
+  "XGBoost": {
+    "accuracy": 0.8683250414593698,
+    "auc": 0.9267579580976697,
+    "precision": 0.7715762273901808,
+    "recall": 0.6659232827832292,
+    "f1": 0.7148671295187934,
+    "mcc": 0.6327505055954464,
+    "confusion_matrix": [
+      [
+        6361,
+        442
+      ],
+      [
+        749,
+        1493
+      ]
+    ],
+    "classification_report": "              precision    recall  f1-score   support\n\n           0       0.89      0.94      0.91      6803\n           1       0.77      0.67      0.71      2242\n\n    accuracy                           0.87      9045\n   macro avg       0.83      0.80      0.81      9045\nweighted avg       0.86      0.87      0.86      9045\n"
+  }
+}
