@@ -33,13 +33,9 @@ def to_dense(x):
 
 
 def clean_df(df: pd.DataFrame) -> pd.DataFrame:
-    # Replace '?' with NA and drop missing
     df = df.replace("?", pd.NA).dropna()
-
-    # Strip whitespace for object columns
     for c in df.select_dtypes(include="object").columns:
         df[c] = df[c].astype(str).str.strip()
-
     return df
 
 
@@ -113,10 +109,9 @@ def train_all_models(train_df: pd.DataFrame):
     return trained
 
 
-st.title("Adult Income Classification App")
-st.caption("Upload a CSV dataset (with the 'income' column). Select a model and view metrics + confusion matrix.")
+st.title("Adult Income Prediction (<=50K vs >50K)")
+st.caption("Upload a CSV (with 'income') → choose model → view metrics + confusion matrix + report.")
 
-# Required: dataset upload
 uploaded = st.file_uploader("Upload CSV (test data recommended)", type=["csv"])
 
 if uploaded is None:
@@ -126,17 +121,16 @@ if uploaded is None:
 df = pd.read_csv(uploaded)
 
 if TARGET not in df.columns:
-    st.error("Your uploaded CSV must contain the target column: 'income'. Upload your test.csv.")
+    st.error("Uploaded CSV must contain 'income' column. Upload your test.csv (with income).")
     st.stop()
 
 df = clean_df(df)
 
-# Split inside app (cloud-friendly). This is for UI evaluation.
+# Split inside app (cloud-friendly)
 train_df, test_df = train_test_split(df, test_size=0.2, random_state=42, stratify=df[TARGET])
 
 trained_models = train_all_models(train_df)
 
-# Required: model dropdown
 st.sidebar.header("Model Selection")
 model_name = st.sidebar.selectbox("Choose a model", list(trained_models.keys()))
 pipe = trained_models[model_name]
@@ -145,13 +139,9 @@ X_test = test_df.drop(columns=[TARGET])
 y_true = to_binary_y(test_df[TARGET])
 
 y_pred = pipe.predict(X_test)
+proba = pipe.predict_proba(X_test)[:, 1] if hasattr(pipe, "predict_proba") else None
 
-proba = None
-if hasattr(pipe, "predict_proba"):
-    proba = pipe.predict_proba(X_test)[:, 1]
-
-# Required: metrics display
-st.subheader("Evaluation Metrics (computed on uploaded data split)")
+st.subheader("Evaluation Metrics")
 
 c1, c2, c3 = st.columns(3)
 c1.metric("Accuracy", f"{accuracy_score(y_true, y_pred):.4f}")
@@ -159,11 +149,9 @@ c2.metric("Precision", f"{precision_score(y_true, y_pred, zero_division=0):.4f}"
 c2.metric("Recall", f"{recall_score(y_true, y_pred, zero_division=0):.4f}")
 c3.metric("F1 Score", f"{f1_score(y_true, y_pred, zero_division=0):.4f}")
 c3.metric("MCC", f"{matthews_corrcoef(y_true, y_pred):.4f}")
-
 if proba is not None:
     c1.metric("AUC", f"{roc_auc_score(y_true, proba):.4f}")
 
-# Required: confusion matrix OR classification report
 st.subheader("Confusion Matrix")
 fig, ax = plt.subplots()
 ConfusionMatrixDisplay.from_predictions(y_true, y_pred, ax=ax)
@@ -172,7 +160,6 @@ st.pyplot(fig, clear_figure=True)
 st.subheader("Classification Report")
 st.text(classification_report(y_true, y_pred, zero_division=0))
 
-# Preview
 st.subheader("Prediction Preview")
 out = test_df.copy()
 out["pred_income_gt_50k"] = y_pred
