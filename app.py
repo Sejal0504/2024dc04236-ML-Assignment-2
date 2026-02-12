@@ -1,120 +1,181 @@
-import json
-from pathlib import Path
-
-import joblib
+import numpy as np
 import pandas as pd
 import streamlit as st
 import matplotlib.pyplot as plt
-from sklearn.metrics import ConfusionMatrixDisplay, classification_report, roc_auc_score
+
+from sklearn.model_selection import train_test_split
+from sklearn.compose import ColumnTransformer
+from sklearn.pipeline import Pipeline
+from sklearn.preprocessing import OneHotEncoder, StandardScaler, FunctionTransformer
+from sklearn.impute import SimpleImputer
+
+from sklearn.linear_model import LogisticRegression
+from sklearn.tree import DecisionTreeClassifier
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.naive_bayes import GaussianNB
+from sklearn.ensemble import RandomForestClassifier
+
+from sklearn.metrics import (
+    accuracy_score, roc_auc_score, precision_score, recall_score,
+    f1_score, matthews_corrcoef, ConfusionMatrixDisplay, classification_report
+)
+
+from xgboost import XGBClassifier
+
 
 st.set_page_config(page_title="Adult Income Classification", layout="wide")
 
-MODEL_DIR = Path("model")
-METRICS_PATH = MODEL_DIR / "metrics.json"
 TARGET = "income"
 
-# ---- Helpers ----
-def pretty(stem: str) -> str:
-    return stem.replace("_", " ").title()
 
-def load_metrics():
-    if METRICS_PATH.exists():
-        return json.loads(METRICS_PATH.read_text(encoding="utf-8"))
-    return {}
+def to_dense(x):
+    return x.toarray() if hasattr(x, "toarray") else x
 
-# ---- UI ----
-st.title("Adult Income Prediction (<=50K vs >50K)")
-st.caption("Upload the test CSV (recommended) and choose a model. The app shows stored evaluation metrics and can compute a confusion matrix for uploaded data.")
 
-# Model selection (dropdown required)
-model_files = sorted([p for p in MODEL_DIR.glob("*.pkl")])
-if not model_files:
-    st.error("No .pkl models found in /model. Run scripts/train_models.py first.")
-    st.stop()
+def clean_df(df: pd.DataFrame) -> pd.DataFrame:
+    # Replace '?' with NA and drop missing
+    df = df.replace("?", pd.NA).dropna()
 
-model_map = {pretty(p.stem): p for p in model_files}
-chosen_name = st.sidebar.selectbox("Select Model", list(model_map.keys()))
-model_path = model_map[chosen_name]
+    # Strip whitespace for object columns
+    for c in df.select_dtypes(include="object").columns:
+        df[c] = df[c].astype(str).str.strip()
 
-# Dataset upload (required)
-uploaded = st.file_uploader("Upload CSV (test data)", type=["csv"])
+    return df
 
-# Show evaluation metrics (required)
-st.subheader("Evaluation Metrics (from saved metrics.json)")
-metrics_data = load_metrics()
 
-# metrics.json uses keys like "XGBoost", "kNN", etc.
-# map display name back to that
-key_guess = None
-for k in metrics_data.keys():
-    if pretty(k.replace(" ", "_").lower()) == chosen_name:
-        key_guess = k
-        break
-# fallback: try direct matches
-if key_guess is None and chosen_name in metrics_data:
-    key_guess = chosen_name
+def to_binary_y(y: pd.Series) -> np.ndarray:
+    y = y.astype(str).str.strip().str.replace(".", "", regex=False)
+    return (y == ">50K").astype(int).to_numpy()
 
-if key_guess and key_guess in metrics_data:
-    m = metrics_data[key_guess]
-    c1, c2, c3 = st.columns(3)
-    c1.metric("Accuracy", f"{m['accuracy']:.4f}")
-    c1.metric("AUC", f"{m['auc']:.4f}")
-    c2.metric("Precision", f"{m['precision']:.4f}")
-    c2.metric("Recall", f"{m['recall']:.4f}")
-    c3.metric("F1", f"{m['f1']:.4f}")
-    c3.metric("MCC", f"{m['mcc']:.4f}")
 
-    with st.expander("Saved Classification Report"):
-        st.text(m["classification_report"])
-else:
-    st.info("metrics.json not found (or model key mismatch). You can still predict with the uploaded CSV.")
+def build_preprocess(X: pd.DataFrame) -> ColumnTransformer:
+    cat_cols = X.select_dtypes(include=["object"]).columns.tolist()
+    num_cols = [c for c in X.columns if c not in cat_cols]
 
-st.divider()
+    num_pipe = Pipeline([
+        ("imputer", SimpleImputer(strategy="median")),
+        ("scaler", StandardScaler())
+    ])
 
-# ---- Predict on uploaded data ----
-st.subheader("Predict on Uploaded Data")
+    cat_pipe = Pipeline([
+        ("imputer", SimpleImputer(strategy="most_frequent")),
+        ("onehot", OneHotEncoder(handle_unknown="ignore"))
+    ])
 
-pipe = joblib.load(model_path)
+    return ColumnTransformer([
+        ("num", num_pipe, num_cols),
+        ("cat", cat_pipe, cat_cols)
+    ])
+
+
+@st.cache_resource
+def train_all_models(train_df: pd.DataFrame):
+    X_train = train_df.drop(columns=[TARGET])
+    y_train = to_binary_y(train_df[TARGET])
+
+    preprocess = build_preprocess(X_train)
+
+    models = {
+        "Logistic Regression": LogisticRegression(max_iter=300),
+        "Decision Tree": DecisionTreeClassifier(random_state=42),
+        "kNN": KNeighborsClassifier(n_neighbors=7),
+        "Naive Bayes": GaussianNB(),
+        "Random Forest": RandomForestClassifier(n_estimators=200, random_state=42, n_jobs=-1),
+        "XGBoost": XGBClassifier(
+            n_estimators=250,
+            max_depth=5,
+            learning_rate=0.08,
+            subsample=0.9,
+            colsample_bytree=0.9,
+            reg_lambda=1.0,
+            random_state=42,
+            eval_metric="logloss",
+            n_jobs=-1
+        )
+    }
+
+    trained = {}
+    for name, clf in models.items():
+        if name == "Naive Bayes":
+            pipe = Pipeline([
+                ("preprocess", preprocess),
+                ("to_dense", FunctionTransformer(to_dense)),
+                ("model", clf)
+            ])
+        else:
+            pipe = Pipeline([
+                ("preprocess", preprocess),
+                ("model", clf)
+            ])
+        pipe.fit(X_train, y_train)
+        trained[name] = pipe
+
+    return trained
+
+
+st.title("Adult Income Classification App")
+st.caption("Upload a CSV dataset (with the 'income' column). Select a model and view metrics + confusion matrix.")
+
+# Required: dataset upload
+uploaded = st.file_uploader("Upload CSV (test data recommended)", type=["csv"])
 
 if uploaded is None:
-    st.warning("Upload a CSV file to run predictions.")
+    st.info("Please upload a CSV to continue.")
     st.stop()
 
 df = pd.read_csv(uploaded)
 
-# If income exists, we can compute confusion matrix/report for uploaded data
-has_target = TARGET in df.columns
-X = df.drop(columns=[TARGET]) if has_target else df.copy()
+if TARGET not in df.columns:
+    st.error("Your uploaded CSV must contain the target column: 'income'. Upload your test.csv.")
+    st.stop()
 
-y_pred = pipe.predict(X)
+df = clean_df(df)
+
+# Split inside app (cloud-friendly). This is for UI evaluation.
+train_df, test_df = train_test_split(df, test_size=0.2, random_state=42, stratify=df[TARGET])
+
+trained_models = train_all_models(train_df)
+
+# Required: model dropdown
+st.sidebar.header("Model Selection")
+model_name = st.sidebar.selectbox("Choose a model", list(trained_models.keys()))
+pipe = trained_models[model_name]
+
+X_test = test_df.drop(columns=[TARGET])
+y_true = to_binary_y(test_df[TARGET])
+
+y_pred = pipe.predict(X_test)
 
 proba = None
 if hasattr(pipe, "predict_proba"):
-    proba = pipe.predict_proba(X)[:, 1]
+    proba = pipe.predict_proba(X_test)[:, 1]
 
-out = df.copy()
+# Required: metrics display
+st.subheader("Evaluation Metrics (computed on uploaded data split)")
+
+c1, c2, c3 = st.columns(3)
+c1.metric("Accuracy", f"{accuracy_score(y_true, y_pred):.4f}")
+c2.metric("Precision", f"{precision_score(y_true, y_pred, zero_division=0):.4f}")
+c2.metric("Recall", f"{recall_score(y_true, y_pred, zero_division=0):.4f}")
+c3.metric("F1 Score", f"{f1_score(y_true, y_pred, zero_division=0):.4f}")
+c3.metric("MCC", f"{matthews_corrcoef(y_true, y_pred):.4f}")
+
+if proba is not None:
+    c1.metric("AUC", f"{roc_auc_score(y_true, proba):.4f}")
+
+# Required: confusion matrix OR classification report
+st.subheader("Confusion Matrix")
+fig, ax = plt.subplots()
+ConfusionMatrixDisplay.from_predictions(y_true, y_pred, ax=ax)
+st.pyplot(fig, clear_figure=True)
+
+st.subheader("Classification Report")
+st.text(classification_report(y_true, y_pred, zero_division=0))
+
+# Preview
+st.subheader("Prediction Preview")
+out = test_df.copy()
 out["pred_income_gt_50k"] = y_pred
 if proba is not None:
     out["proba_gt_50k"] = proba
-
-st.write("Predictions preview:")
 st.dataframe(out.head(20), use_container_width=True)
-
-# Confusion matrix OR classification report (required)
-if has_target:
-    st.subheader("Confusion Matrix (Uploaded Data)")
-    y_true = df[TARGET].astype(str).str.strip().str.replace(".", "", regex=False)
-    y_true_bin = (y_true == ">50K").astype(int)
-
-    fig, ax = plt.subplots()
-    ConfusionMatrixDisplay.from_predictions(y_true_bin, y_pred, ax=ax)
-    st.pyplot(fig, clear_figure=True)
-
-    st.subheader("Classification Report (Uploaded Data)")
-    st.text(classification_report(y_true_bin, y_pred, zero_division=0))
-
-    if proba is not None:
-        st.subheader("AUC on Uploaded Data")
-        st.write(f"{roc_auc_score(y_true_bin, proba):.4f}")
-else:
-    st.info("To show confusion matrix/report, upload a CSV that includes the 'income' column (use your data/processed/test.csv).")
