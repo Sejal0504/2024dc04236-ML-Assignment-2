@@ -12,6 +12,7 @@ This project implements a complete end-to-end machine learning pipeline for inco
 ---
 
 ## Dataset — Adult Income Classification
+## Link- Link:- https://www.kaggle.com/datasets/wenruliu/adult-income-dataset?utm_source=chatgpt.com&select=adult.csv
 
 ---
 
@@ -176,22 +177,20 @@ Models were evaluated using:
 
 ## Model Performance Observations
 
-- **Logistic Regression:** Balanced baseline classifier with strong AUC  
-- **Decision Tree:** Interpretable but slightly lower generalization  
-- **kNN:** Moderate performance; sensitive to scaling  
-- **Naive Bayes:** High recall but lower precision  
-- **Random Forest:** Stable ensemble performance  
-- **XGBoost:** Best overall model with highest predictive capability  
 
----
-
-### Metric Source Clarification
-
-The performance metrics shown above were generated using the controlled evaluation pipeline in `train_models.py` with a fixed train–test split.  
-
-The Streamlit application retrains models dynamically when new data is uploaded, which may produce slightly different metric values due to random data splitting and model variability.  
-
-The reported table represents the stable benchmark used for assignment comparison.
+|     ML Model        |                     Performance                        |
+|---------------------|--------------------------------------------------------|
+| Logistic Regression |  Balanced baseline classifier with strong AUC          |
+|---------------------|--------------------------------------------------------|
+| Decision Tree       |  Interpretable but slightly lower generalization       |
+|---------------------|--------------------------------------------------------|
+| kNN                 |  Moderate performance; sensitive to scaling            |
+|---------------------|--------------------------------------------------------|
+| Naive Bayes         |  High recall but lower precision                       |
+|---------------------|--------------------------------------------------------|
+| Random Forest       |   Stable ensemble performance                          |
+|---------------------|--------------------------------------------------------|
+| XGBoost             |  Best overall model with highest predictive capability |
 
 ---
 
