@@ -179,6 +179,7 @@ Models were evaluated using:
 
 
 |     ML Model        |                     Performance                        |
+|---------------------|--------------------------------------------------------|
 | Logistic Regression |  Balanced baseline classifier with strong AUC          |
 | Decision Tree       |  Interpretable but slightly lower generalization       |
 | kNN                 |  Moderate performance; sensitive to scaling            |
