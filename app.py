@@ -166,3 +166,5 @@ out["pred_income_gt_50k"] = y_pred
 if proba is not None:
     out["proba_gt_50k"] = proba
 st.dataframe(out.head(20), use_container_width=True)
+
+
