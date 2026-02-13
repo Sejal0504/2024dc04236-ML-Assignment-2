@@ -126,7 +126,7 @@ if TARGET not in df.columns:
 
 df = clean_df(df)
 
-# Split inside app (cloud-friendly)
+# Split:-
 train_df, test_df = train_test_split(df, test_size=0.2, random_state=42, stratify=df[TARGET])
 
 trained_models = train_all_models(train_df)
