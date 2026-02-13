@@ -5,6 +5,9 @@
 **Name:** Sejal Patel  
 **BITS ID:** 2024dc04236  
 **Subject:** Machine Learning  
+---
+
+his project implements a complete end-to-end machine learning pipeline for income classification, including data preprocessing, model comparison, evaluation, and interactive deployment using Streamlit.
 
 ---
 
@@ -14,9 +17,9 @@
 
 ## Problem Statement
 
-The objective of this project is to build and compare multiple machine learning classification models to predict whether an individual earns **more than $50K annually** based on demographic and employment attributes.
+The goal of this project is to build, evaluate, and compare multiple classification models to predict whether an individual earns **more than $50K annually** using demographic and employment attributes.  
 
-The project evaluates model performance using standard classification metrics and deploys an interactive Streamlit web application for real-time predictions.
+The system emphasizes reproducible preprocessing, model benchmarking, and deployment through an interactive Streamlit interface.
 
 ---
 
@@ -118,6 +121,18 @@ Raw Dataset
 
 ---
 
+### Machine Learning Workflow Summary
+
+Dataset ingestion  
+→ Data cleaning & validation  
+→ Feature encoding  
+→ Train–test split  
+→ Model training  
+→ Performance evaluation  
+→ Interactive deployment
+
+---
+
 ## Models Used
 
 Six classification models were implemented:
@@ -157,7 +172,6 @@ Models were evaluated using:
 | XGBoost             |   0.868  | 0.927 |   0.772   | 0.666  | 0.715 | 0.633 |
 
 
-
 ---
 
 ## Model Performance Observations
@@ -171,20 +185,42 @@ Models were evaluated using:
 
 ---
 
-## Streamlit Application
+### Metric Source Clarification
 
-The deployed Streamlit app enables:
+The performance metrics shown above were generated using the controlled evaluation pipeline in `train_models.py` with a fixed train–test split.  
 
-- Uploading CSV test datasets  
-- Selecting classification models  
-- Viewing evaluation metrics  
-- Displaying confusion matrices and classification reports  
+The Streamlit application retrains models dynamically when new data is uploaded, which may produce slightly different metric values due to random data splitting and model variability.  
 
+The reported table represents the stable benchmark used for assignment comparison.
 
-## Project Repository
+---
 
-GitHub Repository:   
-https://github.com/Sejal0504/2024dc04236-ML-Assignment-2/blob/main/README.md
+## Streamlit Deployment
+
+An interactive Streamlit web application was developed to demonstrate real-time model evaluation.
+
+Features include:
+
+- CSV dataset upload  
+- Model selection dropdown  
+- Automated retraining  
+- Performance metric visualization  
+- Confusion matrix & classification report  
+
+This interface allows dynamic experimentation with classification models.
+
+---
+
+## Conclusion
+
+This assignment demonstrates the practical implementation of an end-to-end machine learning workflow — from data preparation to model comparison and deployment.  
+
+Ensemble methods, particularly XGBoost, achieved the best predictive performance, highlighting the importance of advanced boosting techniques in classification tasks.  
+
+The Streamlit deployment validates the usability of machine learning models in interactive environments.
+
+---
+
 
 
 
