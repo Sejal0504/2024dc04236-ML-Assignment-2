@@ -163,7 +163,7 @@ Models were evaluated using:
 ## Model Performance Comparison
 
 
-| ML Model            | Accuracy |  AUC  | Precision | Recall |   F1  |  MCC  |
+|     ML Model        | Accuracy |  AUC  | Precision | Recall |   F1  |  MCC  |
 |---------------------|----------|-------|-----------|--------|-------|-------|
 | Logistic Regression |   0.846  | 0.905 |   0.732   | 0.598  | 0.658 | 0.565 |
 | Decision Tree       |   0.806  | 0.747 |   0.604   | 0.631  | 0.617 | 0.488 |
@@ -179,17 +179,11 @@ Models were evaluated using:
 
 
 |     ML Model        |                     Performance                        |
-|---------------------|--------------------------------------------------------|
 | Logistic Regression |  Balanced baseline classifier with strong AUC          |
-|---------------------|--------------------------------------------------------|
 | Decision Tree       |  Interpretable but slightly lower generalization       |
-|---------------------|--------------------------------------------------------|
 | kNN                 |  Moderate performance; sensitive to scaling            |
-|---------------------|--------------------------------------------------------|
 | Naive Bayes         |  High recall but lower precision                       |
-|---------------------|--------------------------------------------------------|
-| Random Forest       |   Stable ensemble performance                          |
-|---------------------|--------------------------------------------------------|
+| Random Forest       |  Stable ensemble performance                           |
 | XGBoost             |  Best overall model with highest predictive capability |
 
 ---
@@ -206,7 +200,6 @@ Features include:
 - Performance metric visualization  
 - Confusion matrix & classification report  
 
-This interface allows dynamic experimentation with classification models.
 
 ---
 
