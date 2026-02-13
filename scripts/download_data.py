@@ -1,41 +1,30 @@
+import os
+from pathlib import Path
+from kaggle.api.kaggle_api_extended import KaggleApi
+
+DATASET = "wenruliu/adult-income-dataset"
+DOWNLOAD_DIR = Path(r"D:\DES\SEM-2\ML\data\raw")
+
+def main():
+    DOWNLOAD_DIR.mkdir(parents=True, exist_ok=True)
+
+    api = KaggleApi()
+    api.authenticate()
+
+    print("Downloading dataset from Kaggle...")
+    api.dataset_download_files(DATASET, path=str(DOWNLOAD_DIR), unzip=True)
+
+    print("Download + unzip complete!")
+    print("Files in raw folder:")
+    for f in os.listdir(DOWNLOAD_DIR):
+        print(" -", f)
+
+if __name__ == "__main__":
+    main()
+
 import pandas as pd
-from sklearn.model_selection import train_test_split
 
-# File paths
-RAW = r"D:\DES\SEM-2\ML\data\raw\adult.csv"
-TRAIN = r"D:\DES\SEM-2\ML\data\processed\train.csv"
-TEST = r"D:\DES\SEM-2\ML\data\processed\test.csv"
-
-print("Loading dataset...")
-df = pd.read_csv(RAW)
-
-# CLEANING
-
-print("Cleaning data...")
-
-# Replace ? with missing and drop
-df = df.replace("?", pd.NA)
-df = df.dropna()
-
-# Remove extra spaces
-for col in df.select_dtypes(include="object"):
-    df[col] = df[col].str.strip()
-
-# SPLIT
-
-print("Splitting data...")
-
-train_df, test_df = train_test_split(
-    df,
-    test_size=0.2,
-    random_state=42,
-    stratify=df["income"]
-)
-
-# Save files
-train_df.to_csv(TRAIN, index=False)
-test_df.to_csv(TEST, index=False)
-
-print("Data cleaned & saved!")
-print("Train shape:", train_df.shape)
-print("Test shape:", test_df.shape)
+df = pd.read_csv(r"D:\DES\SEM-2\ML\data\raw\adult.csv")
+print(df.shape)
+print(df.head())
+print(df.columns)
