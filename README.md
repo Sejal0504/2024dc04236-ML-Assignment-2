@@ -7,7 +7,7 @@
 **Subject:** Machine Learning  
 ---
 
-his project implements a complete end-to-end machine learning pipeline for income classification, including data preprocessing, model comparison, evaluation, and interactive deployment using Streamlit.
+This project implements a complete end-to-end machine learning pipeline for income classification, including data preprocessing, model comparison, evaluation, and interactive deployment using Streamlit.
 
 ---
 
