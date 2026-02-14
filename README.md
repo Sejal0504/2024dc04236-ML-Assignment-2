@@ -76,7 +76,7 @@ These variables were encoded using **One-Hot Encoding** to allow machine learnin
 
 - income  
   - <=50K → lower income class  
-  - >50K → higher income class  
+  - >50K  → higher income class  
 
 Converted into binary format for classification modeling.
 
