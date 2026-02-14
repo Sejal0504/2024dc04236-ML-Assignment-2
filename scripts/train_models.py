@@ -24,9 +24,9 @@ from sklearn.metrics import (
 
 from xgboost import XGBClassifier
 
-TRAIN_PATH = r"D:\DES\SEM-2\ML\data\processed\train.csv"
-TEST_PATH  = r"D:\DES\SEM-2\ML\data\processed\test.csv"
-MODEL_DIR  = r"D:\DES\SEM-2\ML\model"
+TRAIN_PATH = r"/home/cloud/ML/data/processed/train.csv"
+TEST_PATH  = r"/home/cloud/ML/data/processed/test.csv"
+MODEL_DIR  = r"/home/cloud/ML/model"
 METRICS_JSON = os.path.join(MODEL_DIR, "metrics.json")
 
 TARGET = "income"

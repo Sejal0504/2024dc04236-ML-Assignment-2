@@ -172,7 +172,7 @@ Models were evaluated using:
 | XGBoost             |   0.868  | 0.927 |   0.772   | 0.666  | 0.715 | 0.633 |
 
 
-Note:-Model performance details as per train_models.py with a fixed train–test split
+*Note*:-Model performance details as per train_models.py with a fixed train–test split
 
 ---
 
