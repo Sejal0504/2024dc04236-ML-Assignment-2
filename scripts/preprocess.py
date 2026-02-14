@@ -1,10 +1,15 @@
 import pandas as pd
 from sklearn.model_selection import train_test_split
+from pathlib import Path
 
-# File paths
-RAW = r"/home/cloud/ML/data/raw/adult.csv"
-TRAIN = r"/home/cloud/ML/data/processed/train.csv"
-TEST = r"/home/cloud/ML/data/processed/test.csv"
+# Path
+BASE_DIR = Path(__file__).resolve().parent.parent
+RAW = BASE_DIR / "data" / "raw" / "adult.csv"
+TRAIN = BASE_DIR / "data" / "processed" / "train.csv"
+TEST = BASE_DIR / "data" / "processed" / "test.csv"
+
+# Create processed folder if not exists
+TRAIN.parent.mkdir(parents=True, exist_ok=True)
 
 print("Loading dataset...")
 df = pd.read_csv(RAW)
@@ -40,4 +45,7 @@ print("Data cleaned & saved!")
 print("Train shape:", train_df.shape)
 print("Test shape:", test_df.shape)
 
+print("\nSaved files:")
+print("Train:", TRAIN)
+print("Test:", TEST)
 

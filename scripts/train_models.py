@@ -2,6 +2,10 @@ import os, json
 import numpy as np
 import pandas as pd
 import joblib
+from pathlib import Path 
+
+# Path
+BASE_DIR = Path(__file__).resolve().parent.parent
 
 def to_dense(x):
     return x.toarray() if hasattr(x, "toarray") else x
@@ -24,10 +28,10 @@ from sklearn.metrics import (
 
 from xgboost import XGBClassifier
 
-TRAIN_PATH = r"/home/cloud/ML/data/processed/train.csv"
-TEST_PATH  = r"/home/cloud/ML/data/processed/test.csv"
-MODEL_DIR  = r"/home/cloud/ML/model"
-METRICS_JSON = os.path.join(MODEL_DIR, "metrics.json")
+TRAIN_PATH = BASE_DIR / "data" / "processed" / "train.csv"
+TEST_PATH  = BASE_DIR / "data" / "processed" / "test.csv"
+MODEL_DIR  = BASE_DIR / "model"
+METRICS_JSON = MODEL_DIR / "metrics.json"
 
 TARGET = "income"
 
@@ -74,7 +78,7 @@ def metrics(y_true, y_pred, y_score):
     }
 
 def main():
-    os.makedirs(MODEL_DIR, exist_ok=True)
+    MODEL_DIR.mkdir(parents=True, exist_ok=True)
 
     train_df = pd.read_csv(TRAIN_PATH)
     test_df  = pd.read_csv(TEST_PATH)
@@ -109,7 +113,7 @@ def main():
     out = {}
 
     for name, clf in models.items():
-        # GaussianNB needs dense input after one-hot
+
         if name == "Naive Bayes":
             pipe = Pipeline([
                 ("preprocess", preprocess),
@@ -129,7 +133,7 @@ def main():
         out[name] = metrics(y_test, y_pred, y_score)
 
         safe = name.lower().replace(" ", "_").replace("-", "_")
-        joblib.dump(pipe, os.path.join(MODEL_DIR, f"{safe}.pkl"))
+        joblib.dump(pipe, MODEL_DIR / f"{safe}.pkl")
         print(f"Saved: {name} -> model/{safe}.pkl")
 
     with open(METRICS_JSON, "w", encoding="utf-8") as f:
@@ -137,17 +141,14 @@ def main():
 
     print("\nSaved: model/metrics.json")
 
-    # Print comparison table for README/PDF
     rows = []
     for name, m in out.items():
         rows.append([name, m["accuracy"], m["auc"], m["precision"], m["recall"], m["f1"], m["mcc"]])
 
     table = pd.DataFrame(rows, columns=["ML Model Name","Accuracy","AUC","Precision","Recall","F1","MCC"])
-    print("\n=== Comparison Table (copy to README + PDF) ===")
+    print("\n=== Comparison Table ===")
     print(table.to_string(index=False))
 
 if __name__ == "__main__":
     main()
-
-
 
