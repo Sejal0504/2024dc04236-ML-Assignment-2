@@ -11,11 +11,6 @@ This project implements a complete end-to-end machine learning pipeline for inco
 
 ---
 
-## Dataset — Adult Income Classification
-## Link- Link:- https://www.kaggle.com/datasets/wenruliu/adult-income-dataset?utm_source=chatgpt.com&select=adult.csv
-
----
-
 ## Problem Statement
 
 The goal of this project is to build, evaluate, and compare multiple classification models to predict whether an individual earns **more than $50K annually** using demographic and employment attributes.  
@@ -25,6 +20,10 @@ The system emphasizes reproducible preprocessing, model benchmarking, and deploy
 ---
 
 ## Dataset Overview
+
+
+## Dataset — Adult Income Classification
+## Dataset Source: :- https://www.kaggle.com/datasets/wenruliu/adult-income-dataset?utm_source=chatgpt.com&select=adult.csv
 
 The Adult Income dataset is a binary classification dataset used to predict income class based on demographic and employment attributes.
 
@@ -172,6 +171,8 @@ Models were evaluated using:
 | Random Forest       |   0.846  | 0.901 |   0.722   | 0.614  | 0.663 | 0.567 |
 | XGBoost             |   0.868  | 0.927 |   0.772   | 0.666  | 0.715 | 0.633 |
 
+
+Note:-Model performance details as per train_models.py with a fixed train–test split
 
 ---
 
