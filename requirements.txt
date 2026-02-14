@@ -1,0 +1,24 @@
+# Core numerical computing library — supports fast matrix/array operations
+numpy>=1.24
+
+# Data handling and preprocessing — loading, cleaning, transforming datasets
+pandas>=2.0
+
+# Machine learning toolkit — provides Logistic Regression, Decision Tree, kNN,
+# Naive Bayes, Random Forest, evaluation metrics, and train/test split
+scikit-learn>=1.3
+
+# Gradient boosting framework — used for high-performance XGBoost classifier
+xgboost>=2.0
+
+# Web application framework — builds interactive ML interface for deployment
+streamlit>=1.30
+
+# Visualization library — used for confusion matrix and performance plots
+matplotlib>=3.7
+
+# Model serialization — saving and loading trained ML models efficiently
+joblib>=1.3
+
+
+

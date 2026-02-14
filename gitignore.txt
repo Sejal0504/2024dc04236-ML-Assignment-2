@@ -1,0 +1,15 @@
+# Don't push large generated artifacts
+model/*.pkl
+
+# Optional: don't push data files
+data/raw/
+data/processed/
+
+# Notebook checkpoints
+**/.ipynb_checkpoints/
+
+# Python cache
+__pycache__/
+*.pyc
+
+
