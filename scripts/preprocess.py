@@ -2,9 +2,9 @@ import pandas as pd
 from sklearn.model_selection import train_test_split
 
 # File paths
-RAW = r"/home/cloud/ML/data/raw/adult.csv"
-TRAIN = r"/home/cloud/ML/data/processed/train.csv"
-TEST = r"/home/cloud/ML/data/processed/test.csv"
+RAW = r"D:\DES\SEM-2\ML\data\raw\adult.csv"
+TRAIN = r"D:\DES\SEM-2\ML\data\processed\train.csv"
+TEST = r"D:\DES\SEM-2\ML\data\processed\test.csv"
 
 print("Loading dataset...")
 df = pd.read_csv(RAW)

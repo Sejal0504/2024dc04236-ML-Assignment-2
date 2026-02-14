@@ -3,7 +3,7 @@ from pathlib import Path
 from kaggle.api.kaggle_api_extended import KaggleApi
 
 DATASET = "wenruliu/adult-income-dataset"
-DOWNLOAD_DIR = Path(r"/home/cloud/ML/data/raw")
+DOWNLOAD_DIR = Path(r"D:\DES\SEM-2\ML\data\raw")
 
 def main():
     DOWNLOAD_DIR.mkdir(parents=True, exist_ok=True)
@@ -24,7 +24,7 @@ if __name__ == "__main__":
 
 import pandas as pd
 
-df = pd.read_csv(r"/home/cloud/ML/data/raw/adult.csv")
+df = pd.read_csv(r"D:\DES\SEM-2\ML\data\raw\adult.csv")
 print(df.shape)
 print(df.head())
 print(df.columns)
